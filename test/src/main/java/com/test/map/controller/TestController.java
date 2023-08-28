@@ -19,13 +19,19 @@ public class TestController {
 	TestService service;
 	
 	@GetMapping("map")
-	public String main(Model model) {
+	public String getMap() {
+		
+		return "map";
+	}
+	
+	@GetMapping("gps")
+	public String getGps(Model model) {
 		
 		List<MapVO> list = service.getList();
 		
 		model.addAttribute("list",list);
 		
-		return "map";
+		return "GPS";
 	}
 
 }

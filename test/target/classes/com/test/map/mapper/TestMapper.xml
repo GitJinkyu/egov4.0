@@ -3,7 +3,7 @@
 <mapper namespace="com.test.map.mapper.TestMapper">
 
     <select id="getList" resultType="com.test.map.vo.MapVO">
-        SELECT * FROM "Test"
+        SELECT * FROM "test"
     </select>
     
 </mapper>
