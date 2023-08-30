@@ -135,6 +135,7 @@
         
         document.addEventListener("DOMContentLoaded", function() {
             initMap(); // 맵 초기화
+              
 
             // 차량 버튼에 클릭 이벤트 리스너 추가
             var carButtons = document.querySelectorAll(".car-button");
@@ -259,9 +260,6 @@
         }
         
         
-
-        
-        
     </script>
 </head>
 <body>
@@ -309,7 +307,7 @@
 				        <br>
 				        <form>
 				            <input type="date" id="selectDate">
-				            <input type="submit" value="확인" class="btn btn-outline-primary">
+				            <input type="button" value="확인" id="Datebtn" class="btn btn-outline-primary">
 				        </form>
 				    </p>
 				    <hr>
