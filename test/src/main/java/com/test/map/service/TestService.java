@@ -6,8 +6,12 @@ import org.springframework.stereotype.Service;
 
 
 import com.test.map.vo.localVO;
+import com.test.map.vo.pointsVO;
 
 @Service
 public interface TestService {
+	
 	public List<localVO> getCarList ();
+	
+	public List<pointsVO> getratio (pointsVO vo);
 }
