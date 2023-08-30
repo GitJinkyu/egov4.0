@@ -16,11 +16,6 @@ public class GPSServiceImpl implements GPSService{
 	@Autowired
 	GPSMapper mapper;
 
-	@Override
-	public List<tempVO> getTemp() {
-
-		return mapper.getTemp();
-	}
 
 	@Override
 	public int insertTemp(tempVO vo) {
@@ -37,32 +32,17 @@ public class GPSServiceImpl implements GPSService{
 	@Override
 	public int insertLocal() {
 		
-		// temp 테이블의 데이터를 조회
-        List<tempVO> tempData = getTemp();
+		int res = 0 ;
 
-        // temp 테이블의 데이터를 local 테이블에 전부 insert
-        int insertCount = 0;
-        for (tempVO temp : tempData) {
-            localVO local = new localVO();
-            local.setLon(temp.getLon());
-            local.setLat(temp.getLat());
-            
-            System.out.println("로컬에 넣는중");
-            int result = mapper.insertLocal(local);
-            if (result == 1) {
-                insertCount++;
-            }
-        }
+		res=mapper.insertLocal();
         
-        
-        
-        return insertCount;
+        return res;
 	}
 	
     @Scheduled(fixedDelay = 15000) // 60초(1분)마다 실행
     public void transferData() {
-        int insertedCount = insertLocal();
-        System.out.println("주기적으로 데이터를 옮김. 총 " + insertedCount + "개의 데이터를 옮겼습니다.");
+        int res = insertLocal();
+        System.out.println("주기적으로 데이터를 옮김. 총 " + res + "개의 데이터를 옮겼습니다.");
         deleteTemp();
         System.out.println("템프 삭제함");
     }

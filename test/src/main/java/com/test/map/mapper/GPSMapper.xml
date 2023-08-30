@@ -2,14 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.test.map.mapper.GPSMapper">
 
-    <select id="getTemp" resultType="com.test.map.vo.tempVO">
-        SELECT * FROM "temp"
-    </select>
     
     <insert id="insertTemp">
 	    INSERT INTO public.temp(
-		lon, lat)
-		VALUES (#{lon},#{lat})
+		lon, lat,geom,car_num,noise,rpm)
+		VALUES (#{lon},#{lat},ST_SetSRID(ST_MakePoint(#{lon}::numeric, #{lon}::numeric), 4326),#{car_num},#{noise},#{rpm})
 	</insert>
 	
 	<delete id="deleteTemp">
@@ -17,9 +14,8 @@
 	</delete>
 	
 	<insert id="insertLocal">
-	    INSERT INTO public.local(
-		lon, lat)
-		VALUES (#{lon},#{lat})
+	    INSERT INTO local (lon, lat, date, time, geom, car_num, noise, rpm)
+		SELECT lon, lat, date, time, geom, car_num, noise, rpm FROM temp;
 	</insert>
 	
 	

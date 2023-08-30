@@ -5,7 +5,14 @@ import lombok.Data;
 @Data
 public class localVO {
 	
+	private int gid;
 	private int lon;
 	private int lat;
+	private String car_num;
+	private String date;
+	private String time;
+	private String geom;
+	private String noise;
+	private String rpm;
 
 }

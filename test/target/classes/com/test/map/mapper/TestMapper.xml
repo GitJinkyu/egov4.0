@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.test.map.mapper.TestMapper">
 
-    <select id="getList" resultType="com.test.map.vo.MapVO">
-        SELECT * FROM "test"
+    <select id="getCarList" resultType="com.test.map.vo.localVO">
+        SELECT DISTINCT car_num FROM points;
     </select>
     
 </mapper>

@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.test.map.service.TestService;
-import com.test.map.vo.MapVO;
+
+import com.test.map.vo.localVO;
 
 @Controller
 @RequestMapping("/test/*")
@@ -19,17 +20,19 @@ public class TestController {
 	TestService service;
 	
 	@GetMapping("map")
-	public String getMap() {
+	public String getMap(Model model) {
+		
+		List<localVO> list = service.getCarList();
+		
+		model.addAttribute("list",list);
 		
 		return "map";
 	}
 	
 	@GetMapping("gps")
-	public String getGps(Model model) {
+	public String getGps() {
 		
-		List<MapVO> list = service.getList();
 		
-		model.addAttribute("list",list);
 		
 		return "GPS";
 	}

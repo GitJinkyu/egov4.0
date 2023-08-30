@@ -13,13 +13,21 @@
     <script type="text/javascript">
     function sendRandomValues() {
         // 랜덤한 두 개의 값을 생성
-        var randomValue1 = Math.floor(Math.random() * 100);
-        var randomValue2 = Math.floor(Math.random() * 100);
+        var lon = Math.floor(Math.random() * 100);
+        var lat = Math.floor(Math.random() * 100);
+        var noise = Math.floor(Math.random() * (121 - 60) + 60); // 60 이상 120 이하의 랜덤 정수
+        var rpm = Math.floor(Math.random() * (1701 - 1300) + 1300); // 1300 이상 1700 이하의 랜덤 정수
+
+        
 
         // 요청 데이터 생성
         var data = {
-            lon: randomValue1,
-            lat: randomValue2
+            lon: lon,
+            lat: lat,
+            car_num: '101가1234',
+            noise: noise,
+            rpm: rpm,
+            
         };
 
         // fetch를 사용하여 POST 요청 보내기
@@ -48,7 +56,7 @@
 
         // 페이지가 로드되면 10초마다 sendRandomValues 함수를 호출
         window.onload = function() {
-            setInterval(sendRandomValues, 10000);
+            setInterval(sendRandomValues, 5000);
         };
     </script>
     

@@ -2,10 +2,11 @@ package com.test.map.mapper;
 
 import java.util.List;
 
-import com.test.map.vo.MapVO;
+
+import com.test.map.vo.localVO;
 
 public interface TestMapper {
 	
-	public List<MapVO> getList ();
+	public List<localVO> getCarList ();
 
 }

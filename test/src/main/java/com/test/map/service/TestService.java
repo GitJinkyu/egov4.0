@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.test.map.vo.MapVO;
+
+import com.test.map.vo.localVO;
 
 @Service
 public interface TestService {
-	public List<MapVO> getList ();
+	public List<localVO> getCarList ();
 }

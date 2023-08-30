@@ -10,8 +10,6 @@ import com.test.map.vo.tempVO;
 @Service
 public interface GPSService {
 	
-	public List<tempVO> getTemp();
-	
 	public int insertTemp(tempVO vo);
 	
 	public int deleteTemp();
