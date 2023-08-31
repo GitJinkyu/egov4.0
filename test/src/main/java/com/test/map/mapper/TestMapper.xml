@@ -10,17 +10,18 @@
     <select id="getratio" resultType="com.test.map.vo.pointsVO">
     <![CDATA[
     SELECT 
-	   (SELECT TO_CHAR(MAX("time")::time - MIN("time"), 'HH24:MI:SS') AS timediff
-	      FROM points
-	       WHERE car_num = '#{car_num}' AND date = '#{date}') AS "time",
-	   (SELECT 
-	      CASE 
-	       WHEN (SELECT COUNT(*) FROM points WHERE car_num = '#{car_num}' AND date = '#{date}') = 0
-	       THEN null
-	       ELSE TRUNC((COUNT(*)::float / (SELECT COUNT(*) FROM points WHERE car_num = '#{car_num}' AND date = '#{date}')*100)::numeric,2)
-	    END
-	FROM points
-	WHERE car_num = '#{car_num}' AND date = '#{date}' AND( noise < 80 or rpm < 1500)) AS ratio
+         (SELECT TO_CHAR(MAX("time")::time - MIN("time"), 'HH24:MI:SS') AS timediff
+            FROM points
+             WHERE car_num = #{car_num} AND date = #{date}) AS "time",
+         (SELECT 
+            CASE 
+             WHEN (SELECT COUNT(*) FROM points WHERE car_num = #{car_num} AND date = #{date}) = 0
+             THEN null
+             ELSE TRUNC((COUNT(*)::float / (SELECT COUNT(*) FROM points WHERE car_num = #{car_num} AND date = #{date})*100)::numeric,2)
+          END
+      FROM points
+      WHERE car_num = #{car_num} AND date = #{date} AND noise >= 80 AND rpm >= 1500) AS ratio
+
 	]]>
 	</select>
 	

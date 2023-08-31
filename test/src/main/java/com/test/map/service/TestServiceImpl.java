@@ -21,8 +21,7 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public List<pointsVO> getratio(pointsVO vo) {
-	
+	public pointsVO getratio(pointsVO vo) {
 		return mapper.getratio(vo);
 	}
 

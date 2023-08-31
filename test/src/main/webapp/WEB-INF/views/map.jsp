@@ -216,7 +216,7 @@
                     baseLayer, // 기본 레이어 추가
                     ...additionalLayers // 추가 레이어들 추가
                 ],
-                target: 'map',
+                target: 'map', // div id map을 선택함
                 view: new ol.View({
                     center: yonginCoords,
                     zoom: 11,
@@ -258,8 +258,159 @@
                 map.addLayer(hybridLayer);
             }
         }
+       
         
         
+      	//get방식 요청
+        function fetchGet(url,callback){
+        	console.log(url);
+        	console.log(callback);
+        	
+        	try {
+        	//url 요청
+        	fetch(url)
+        		//요청 결과json 문자열을 javascript 객체로 반환
+        		.then(response => response.json())
+        		//매개로 받은 콜백함수 실행
+        		.then(map => callback(map));
+        		
+        	} catch (e) {
+        		console.log(e);
+        	}
+        	
+        	
+        }
+
+        //post방식 요청
+        function fetchPost(url,obj,callback){
+        	console.log(url);
+        	console.log(callback);
+        	
+        	try {
+        		//url 요청
+        		fetch(url,{method : 'post'
+        					,headers : {'Content-Type' : 'application/json'} 
+        					,body  : JSON.stringify(obj)
+        			  })
+        			//요청 결과json 문자열을 javascript 객체로 반환
+        			.then(response => response.json())
+        			//매개로 받은 콜백함수 실행
+        			.then(map => callback(map))	
+        		} catch (e) {
+        			console.log(e);       		
+        		}
+        }
+
+        function getRatio(){
+        	let car_num = document.querySelector('#selectedCarNumber').textContent;
+        	let encodedCarNum = encodeURIComponent(car_num);
+        	let date = document.querySelector('#selectDate').value;
+	
+        	//전달할 객체로 생성
+        	let obj = {'car_num' : car_num
+        			,  'date' : date
+        			}
+        	
+        	fetchPost('/test/getRatio/',obj,drawRatio)
+
+        }
+        
+        function drawRatio(fetchmap){
+        	let nodata = document.querySelector("#resbox"); 
+			
+			if(fetchmap.ratio === null){
+				
+				map.getLayers().clear();
+				
+				// 기본 레이어 및 추가 레이어들 다시 추가
+		        map.addLayer(baseLayer);
+		        additionalLayers.forEach(layer => {
+		            map.addLayer(layer);
+		        });
+		        
+				nodata.innerHTML = '<p><b>데이터가 없습니다.</b></p>'
+				
+				
+			}else{
+	        	let ratio = fetchmap.ratio.ratio;
+	        	let time = fetchmap.ratio.time;
+	        	
+				console.log(ratio)
+				console.log(time)
+				
+				nodata.innerHTML = '';//HTML작성하기전에 한번 초기화해서 백지 만들어주기
+				
+				nodata.innerHTML += ''
+								  +	'<p>운행 시간 : <b>'+time+'</b></p>'
+			        			  +	'<p>청소 비율 : <b>'+ratio+'%</b></p>';
+				
+				
+				
+				var carNum = document.querySelector('#selectedCarNumber').textContent;
+		        var date = document.querySelector('#selectDate').value; 
+		        console.log("패치 변수",carNum)
+		        console.log("패치 변수",date)
+		        
+		        
+		        var clean_O = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_O',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+	
+		        var clean_X = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_X',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+		        
+		        var clean_path = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_path',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date 
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+		        
+		        
+		        
+		        
+		     	// 맵에 있는 모든 레이어 제거
+		        map.getLayers().clear();
+	
+		        // 기본 레이어 및 추가 레이어들 다시 추가
+		        map.addLayer(baseLayer);
+		        additionalLayers.forEach(layer => {
+		            map.addLayer(layer);
+		        });
+	
+		        // clean_O, clean_X 레이어 맵에 추가
+		        map.addLayer(clean_O);
+		        map.addLayer(clean_X);
+		        map.addLayer(clean_path);
+				
+				}
+		
+			
+        }
+
+
     </script>
 </head>
 <body>
@@ -307,13 +458,13 @@
 				        <br>
 				        <form>
 				            <input type="date" id="selectDate">
-				            <input type="button" value="확인" id="Datebtn" class="btn btn-outline-primary">
+				            <input type="button" value="확인" id="Datebtn" class="btn btn-outline-primary" onclick="getRatio()">
 				        </form>
 				    </p>
 				    <hr>
 				    <div id="resbox">
-				        <p>운행 시간 : <b>변수줄거야</b></p>
-				        <p>청소 비율 : <b>변수줄거야</b></p>
+				        <p>운행 시간 : <b></b></p>
+				        <p>청소 비율 : <b></b></p>
 				        
 				    </div>
 				    <hr>
