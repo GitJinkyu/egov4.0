@@ -38,13 +38,13 @@
             text-align: center;
             float: left;
             width: 300px;
-            height: 750px;
+            height: 850px;
         }
         
         .right-container {
             float: left;
             width: 1200px;
-            height: 750px;
+            height: 850px;
         }
         .button-box{
             height:100%;
@@ -420,7 +420,7 @@
             <div class="button-box">
                 
                 <div class='textbox'> 
-                    <p><img src="resources/img/logo.png" style='height: 50px; width: 50px;'><b>용인시 청소차 관제 시스템</b></p>
+                    <p><img src="https://i.namu.wiki/i/zXavwSCTk_--Z8alXtZ_-SUCyHgMbFJlXA6h-yg9zuS5_RNWDBV4H2Y4nJOESsDLhJcNzwdCSet1w15z1DUmVQ.svg" style='height: 50px; width: 50px;'><b>용인시 청소차 관제 시스템</b></p>
                 </div>
                 <hr>
 
