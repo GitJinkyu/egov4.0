@@ -28,7 +28,7 @@
     
         .container {
             max-width:1600px;
-            margin: 0;
+            margin: 0 atuo;
             padding: 0;
         
         }
