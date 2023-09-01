@@ -420,7 +420,7 @@
             <div class="button-box">
                 
                 <div class='textbox'> 
-                    <p><img src="yongin.svg" alt="용인시 로고" style='height: 50px; width: 50px;'><b>용인시 청소차 관제 시스템</b></p>
+                    <p><img src="resources/img/logo.png" style='height: 50px; width: 50px;'><b>용인시 청소차 관제 시스템</b></p>
                 </div>
                 <hr>
 
