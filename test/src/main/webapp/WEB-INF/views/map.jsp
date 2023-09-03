@@ -26,10 +26,11 @@
             box-sizing: border-box;
         }
     
-        .container {
-            max-width:1600px;
+        .maincontainer {
+            width:1600px;
             margin: 0 atuo;
             padding: 0;
+
         
         }
     
@@ -37,13 +38,13 @@
             background-color: rgba(212, 212, 212, 0.651);
             text-align: center;
             float: left;
-            width: 300px;
+            width: 20%;
             height: 850px;
         }
         
         .right-container {
             float: left;
-            width: 1200px;
+            width: 80%;
             height: 850px;
         }
         .button-box{
@@ -130,7 +131,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="maincontainer">
         <div class="left-container">
             
             <div class="button-box">
@@ -206,27 +207,31 @@
             initMap(); // 맵 초기화
               
 
-            // 차량 버튼에 클릭 이벤트 리스너 추가
-            var carButtons = document.querySelectorAll(".car-button");
-            carButtons.forEach(function(button) {
-                button.addEventListener("click", function() {
-                    var carNum = button.value;
+        });
+        
+        
+        
+        
+     	// 차량 버튼에 클릭 이벤트 리스너 추가
+        var carButtons = document.querySelectorAll(".car-button");
+        carButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                var carNum = button.value;
 
-                    // .dateSelect 섹션 표시 및 내용 업데이트
-                    var dateSelectSection = document.querySelector(".dateSelect");
-                    dateSelectSection.style.display = "block";
-                    
-                    var selectedCarNumber = document.getElementById("selectedCarNumber");
-                    selectedCarNumber.textContent = carNum;
-                });
-            });
-
-            // #close 버튼에 클릭 이벤트 리스너 추가
-            var closeButton = document.getElementById("close");
-            closeButton.addEventListener("click", function() {
+                // .dateSelect 섹션 표시 및 내용 업데이트
                 var dateSelectSection = document.querySelector(".dateSelect");
-                dateSelectSection.style.display = "none";
+                dateSelectSection.style.display = "block";
+               
+                var selectedCarNumber = document.getElementById("selectedCarNumber");
+                selectedCarNumber.textContent = carNum;
             });
+        });
+
+        // #close 버튼에 클릭 이벤트 리스너 추가
+        var closeButton = document.getElementById("close");
+        closeButton.addEventListener("click", function() {
+            var dateSelectSection = document.querySelector(".dateSelect");
+            dateSelectSection.style.display = "none";
         });
         
         var map; // 맵 객체의 전역 변수 선언
@@ -529,12 +534,34 @@
 		        map.addLayer(clean_start);
 		        map.addLayer(clean_end);
 
+		        //새로받은 위도 경도값의 위치로 부드럽게 줌인하기
+		        var newlon = 127.0695
+		        var newlat = 37.2987
+		        
+		        zoomToPosition(newlon, newlat, 15); // 줌값 조절하는곳
 		     
 		        
 			}
 		
 			
         }
+        
+        //줌 애니메이션 메소드
+        function zoomToPosition(lon, lat, zoomLevel) {
+            var view = map.getView();
+            var currentCenter = view.getCenter();
+            var currentZoom = view.getZoom();
+
+            var duration = 500; // 애니메이션 지속 시간. 값이 작을수록 줌이 빠름
+
+            map.getView().animate({
+                center: ol.proj.fromLonLat([lon, lat]),
+                zoom: zoomLevel,
+                duration: duration,
+            });
+        }
+
+
 
 
     </script>    
