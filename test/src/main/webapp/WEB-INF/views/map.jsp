@@ -239,19 +239,22 @@
      	// 맵 및 초기 레이어를 초기화합니다.
         var yonginCoords = ol.proj.fromLonLat([127.1775, 37.2410]);
         
-        // 기본 레이어 설정
+        //-----------------기본 레이어 설정------------------------
+        //기본 레이어
         var base = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Base/{z}/{y}/{x}.png'
             })
         });
         
+        //하이브리드 레이어
         var hybrid = new ol.layer.Tile({
             source: new ol.source.XYZ({
                 url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Hybrid/{z}/{y}/{x}.png'
             })
         });
         
+        //경계면 레이어
         var emd = new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: 'http://localhost:8000/geoserver/test/wms',
@@ -263,6 +266,7 @@
             }),
         });
         
+        //링크 레이어
         var link = new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: 'http://localhost:8000/geoserver/test/wms',
@@ -274,6 +278,7 @@
             }),
         });
         
+        //노드 레이어
         var node = new ol.layer.Tile({
             source: new ol.source.TileWMS({
                 url: 'http://localhost:8000/geoserver/test/wms',
@@ -285,7 +290,7 @@
             }),
         });
         
-        
+        //맵 초기화 함수
         function initMap() {
         	
         	map = new ol.Map({
@@ -304,23 +309,27 @@
             
         }
         
-        // 레이어 업데이트 함수
+        //------------레이어 업데이트 함수들---------------
+		//배경지도 업데이트 함수
         function updateMapLayer(layerSource) {
             base.setSource(layerSource);
         }
         
+      	//기본 지도 
         function switchToBasic() {
             updateMapLayer(new ol.source.XYZ({
                 url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Base/{z}/{y}/{x}.png'
             }));  
         }
         
+      	//위성 지도
         function switchToSatellite() {
             updateMapLayer(new ol.source.XYZ({
                 url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Satellite/{z}/{y}/{x}.jpeg'
             }));
         }
         
+      	//하이브리드 지도
         function switchToHybrid() {
             var hybridCheckbox = document.getElementById("btncheck3");
 
@@ -379,6 +388,7 @@
         		}
         }
 
+        //청소비율,운행시간 조회
         function getRatio(){
         	let car_num = document.querySelector('#selectedCarNumber').textContent;
         	let encodedCarNum = encodeURIComponent(car_num);
@@ -393,42 +403,52 @@
 
         }
         
+        //청소 레이어들 뿌려주는 콜백함수
         function drawRatio(fetchmap){
-        	let nodata = document.querySelector("#resbox"); 
+        	//운행시간 청소비율 표시할곳
+        	let result = document.querySelector("#resbox"); 
         	
         	// hybrid 체크여부 값 가져오기
             let hybridCheckbox = document.getElementById("btncheck3");
         	
         	
-			
+			//car_num과 date를 선택 -> DB에 조회결과 없을때
 			if(fetchmap.ratio === null){
 				
 				//map요소에 레이어들 초기화
 				map.getLayers().clear();
 				
 				// 기본 레이어 다시 추가
-		        map.addLayer(base);
-		        map.addLayer(emd);
-		        map.addLayer(link);
-		        map.addLayer(node);
+		        map.addLayer(base); //배경지도 레이어
+		        map.addLayer(emd);	//용인시 경계면 레이어
+		        map.addLayer(link);	//용인시 링크
+		        map.addLayer(node);	//용인시 노드
 		        
 		     	// hybrid 체크박스가 체크되었을 때만 hybrid 레이어 추가
 		        if (hybridCheckbox.checked) {
 		            map.addLayer(hybrid);
 		        }
 		        
-				nodata.innerHTML = '<p><b>데이터가 없습니다.</b></p>'
+		        result.innerHTML = '<p><b>데이터가 없습니다.</b></p>'
+		      
+		        //용인시 위도 경도
+		        var newlon = 127.1775;
+		        var newlat = 37.2410;
+		        
+		        zoomToPosition(newlon, newlat, 11); // 줌값 조절하는곳
 				
 			}else{
+				//청소비율
 	        	let ratio = fetchmap.ratio.ratio;
+				//청소시간
 	        	let time = fetchmap.ratio.time;
 	        	
 				console.log(ratio) //변수 잘 들어오는지 체크
 				console.log(time)  //변수 잘 들어오는지 체크
 				
-				nodata.innerHTML = '';//HTML작성하기전에 한번 초기화해서 백지 만들어주기
+				result.innerHTML = '';//HTML작성하기전에 한번 초기화해서 백지 만들어주기
 				
-				nodata.innerHTML += ''
+				result.innerHTML += ''
 								  +	'<p>운행 시간 : <b>'+time+'</b></p>'
 			        			  +	'<p>청소 비율 : <b>'+ratio+'%</b></p>';
 				
@@ -508,6 +528,19 @@
 		                serverType: 'geoserver',
 		            }),
 		        });
+		        
+		        //청소 순서
+		        var clean_num = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_num',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
 	        
 		        
 		        
@@ -517,10 +550,10 @@
 		        map.getLayers().clear();
 	
 		        // 기본 레이어 다시 추가------------------------
-		        map.addLayer(base);
-		        map.addLayer(emd);
-		        map.addLayer(link);
-		        map.addLayer(node);
+		        map.addLayer(base); //배경지도 레이어
+		        map.addLayer(emd);	//용인시 경계면 레이어
+		        map.addLayer(link);	//용인시 링크
+		        map.addLayer(node);	//용인시 노드
 		        
 		     	// hybrid 체크박스가 체크되었을 때만 hybrid 레이어 추가
 		        if (hybridCheckbox.checked) {
@@ -528,15 +561,19 @@
 		        }
 
 		        // 지오서버에서 SQL뷰 파라미터 레이어들 맵에 추가---------
-		        map.addLayer(clean_O);
-		        map.addLayer(clean_X);
-		        map.addLayer(clean_path);
-		        map.addLayer(clean_start);
-		        map.addLayer(clean_end);
+		        map.addLayer(clean_O);		//청소O 레이어
+		        map.addLayer(clean_X);		//청소X 레이어
+		        map.addLayer(clean_path);	//청소 경로 레이어
+		        map.addLayer(clean_num);
+		        map.addLayer(clean_start);	//청소 시작점 레이어
+		        map.addLayer(clean_end);	//청소 끝점 레이어
 
 		        //새로받은 위도 경도값의 위치로 부드럽게 줌인하기
-		        var newlon = 127.0695
-		        var newlat = 37.2987
+		        var newlon = fetchmap.ratio.start_lon;
+		        var newlat = fetchmap.ratio.start_lat;
+		        
+		        console.log(newlon);
+		        console.log(newlat);
 		        
 		        zoomToPosition(newlon, newlat, 15); // 줌값 조절하는곳
 		     

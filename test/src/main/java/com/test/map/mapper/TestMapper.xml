@@ -3,24 +3,32 @@
 <mapper namespace="com.test.map.mapper.TestMapper">
 
     <select id="getCarList" resultType="com.test.map.vo.localVO">
-        SELECT DISTINCT car_num FROM points;
+        SELECT car_num FROM car_list
     </select>
     
     
     <select id="getratio" resultType="com.test.map.vo.pointsVO">
     <![CDATA[
-    SELECT 
-         (SELECT TO_CHAR(MAX("time")::time - MIN("time"), 'HH24:MI:SS') AS timediff
-            FROM points
-             WHERE car_num = #{car_num} AND date = #{date}) AS "time",
-         (SELECT 
-            CASE 
-             WHEN (SELECT COUNT(*) FROM points WHERE car_num = #{car_num} AND date = #{date}) = 0
-             THEN null
-             ELSE TRUNC((COUNT(*)::float / (SELECT COUNT(*) FROM points WHERE car_num = #{car_num} AND date = #{date})*100)::numeric,2)
-          END
-      FROM points
-      WHERE car_num = #{car_num} AND date = #{date} AND noise >= 80 AND rpm >= 1500) AS ratio
+   SELECT 
+    (SELECT TO_CHAR(MAX("time")::time - MIN("time"), 'HH24:MI:SS') AS timediff
+     FROM points
+     WHERE car_num = #{car_num} AND date = #{date}) AS "time",
+    (SELECT 
+        CASE 
+            WHEN (SELECT COUNT(*) FROM points WHERE car_num = #{car_num} AND date = #{date}) = 0
+            THEN null
+            ELSE TRUNC((COUNT(*)::float / (SELECT COUNT(*) FROM points WHERE car_num = #{car_num} AND date = #{date})*100)::numeric, 2)
+        END
+    FROM points
+    WHERE car_num = #{car_num} AND date = #{date} AND noise >= 80 AND rpm >= 1500) AS ratio,
+    (SELECT TO_CHAR(lon::numeric, 'FM9999.9999')
+     FROM points
+     WHERE car_num = #{car_num} AND date = #{date} AND "time" = (SELECT MIN("time") FROM points WHERE car_num = #{car_num} AND date = #{date})) AS start_lon,
+    (SELECT TO_CHAR(lat::numeric, 'FM9999.9999')
+     FROM points
+     WHERE car_num = #{car_num} AND date = #{date} AND "time" = (SELECT MIN("time") FROM points WHERE car_num = #{car_num} AND date = #{date})) AS start_lat
+    
+
 
 	]]>
 	</select>
