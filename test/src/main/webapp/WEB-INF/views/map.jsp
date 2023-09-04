@@ -48,17 +48,7 @@
             width: 20%;
             height: 100%;
             padding: 5px;
-   
             
-        }
-        
-        .buttonbox {
-        	background-color: rgba(212, 212, 212, 0.651);
-            height: 100%;
-        	text-align: center;
-        	border-radius: 15px; /* 모서리를 20px 둥글게 만듦 */
-        	padding: 5px;
-        
         }
         
         .right-container {
@@ -74,13 +64,21 @@
         
         }
         
-        .button-box{
-          
+        .buttonbox {
+        	background-color: rgba(212, 212, 212, 0.651);
+            height: 100%;
+        	text-align: center;
+        	border-radius: 15px; /* 모서리를 20px 둥글게 만듦 */
+        	padding: 5px;
+        
         }
+        
         .textbox{
             margin-top:30px;
             text-align: center;
+            
         }
+        
         .visionSelect{
             background-color: white;
             width: 280px;
@@ -93,6 +91,7 @@
             margin-bottom: 30px;
 
         }
+        
         .carSelect{
             background-color: white;
             width: 280px;
@@ -103,9 +102,9 @@
             padding-top: 20px;
             padding-bottom: 20px;
             margin-bottom: 30px;
-
-
+            
         }
+        
         .dateSelect{
             background-color: white;
             width: 280px;
@@ -127,6 +126,7 @@
         #map{
             height:100%;
             border-radius: 20px; /* 모서리를 20px 둥글게 만듦 */
+            
         }
 
         /* .carbtn 버튼의 배경 색상 제거 */
@@ -152,9 +152,6 @@
             border: 1px solid rgb(0, 0, 0); /* 클릭 시 보더 라인 추가 */
         }
 
-
-
-    
         
     </style>
 </head>
