@@ -25,30 +25,57 @@
             padding: 0;
             box-sizing: border-box;
         }
+        
+        body {
+		    background-color: #333; /* 어두운 회색 배경 색상 */
+		    /* 다른 스타일 속성들... */
+		}
+        
     
         .maincontainer {
+        	background-color: white;
             width:1600px;
-            margin: 0 atuo;
-            padding: 0;
+            height:850px;
+            margin: 50px auto;
+            
 
-        
+            border-radius: 15px; /* 모서리를 20px 둥글게 만듦 */
+            
         }
     
         .left-container {
-            background-color: rgba(212, 212, 212, 0.651);
-            text-align: center;
             float: left;
             width: 20%;
-            height: 850px;
+            height: 100%;
+            padding: 5px;
+   
+            
+        }
+        
+        .buttonbox {
+        	background-color: rgba(212, 212, 212, 0.651);
+            height: 100%;
+        	text-align: center;
+        	border-radius: 15px; /* 모서리를 20px 둥글게 만듦 */
+        	padding: 5px;
+        
         }
         
         .right-container {
             float: left;
             width: 80%;
-            height: 850px;
+            height: 100%;
+            padding:5px;
+            
         }
+        
+        .ol-unselectable, .ol-viewport {
+        	border-radius: 15px; /* 모서리를 20px 둥글게 만듦 */
+        
+        }
+        
         .button-box{
-            height:100%;
+          
         }
         .textbox{
             margin-top:30px;
@@ -58,7 +85,7 @@
             background-color: white;
             width: 280px;
             height: 80px;
-            border-radius: 20px;
+            border-radius: 15px;
             display : flex;
             justify-content: center;
             align-items : center;
@@ -69,7 +96,7 @@
         .carSelect{
             background-color: white;
             width: 280px;
-            border-radius: 20px;
+            border-radius: 15px;
             justify-content: center;
             align-items : center;
             margin: 0 auto;
@@ -82,7 +109,7 @@
         .dateSelect{
             background-color: white;
             width: 280px;
-            border-radius: 20px;
+            border-radius: 15px;
             justify-content: center;
             align-items : center;
             margin: 0 auto;
@@ -99,6 +126,7 @@
 
         #map{
             height:100%;
+            border-radius: 20px; /* 모서리를 20px 둥글게 만듦 */
         }
 
         /* .carbtn 버튼의 배경 색상 제거 */
@@ -134,7 +162,7 @@
     <div class="maincontainer">
         <div class="left-container">
             
-            <div class="button-box">
+           <div class="buttonbox">
                 
                 <div class='textbox'> 
                     <p><img src="https://i.namu.wiki/i/zXavwSCTk_--Z8alXtZ_-SUCyHgMbFJlXA6h-yg9zuS5_RNWDBV4H2Y4nJOESsDLhJcNzwdCSet1w15z1DUmVQ.svg" style='height: 50px; width: 50px;'><b>용인시 청소차 관제 시스템</b></p>
@@ -187,8 +215,9 @@
 				    <hr>
 				    <button id="close">접기</button>
 				</div>
+		   </div>
 
-            </div>
+            
         </div>
 
         <div class='right-container'>
@@ -548,7 +577,7 @@
 		        
 		      	//map 요소에 레이어들 초기화
 		        map.getLayers().clear();
-	
+					
 		        // 기본 레이어 다시 추가------------------------
 		        map.addLayer(base); //배경지도 레이어
 		        map.addLayer(emd);	//용인시 경계면 레이어
