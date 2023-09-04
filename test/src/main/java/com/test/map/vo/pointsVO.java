@@ -17,6 +17,8 @@ public class pointsVO {
 	
 	
 	private String ratio;
+	private double start_lon;
+	private double start_lat;
 
 
 
