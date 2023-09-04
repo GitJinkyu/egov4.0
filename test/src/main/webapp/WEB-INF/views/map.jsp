@@ -26,10 +26,11 @@
             box-sizing: border-box;
         }
     
-        .container {
-            max-width:1600px;
+        .maincontainer {
+            width:1600px;
             margin: 0 atuo;
             padding: 0;
+
         
         }
     
@@ -37,13 +38,13 @@
             background-color: rgba(212, 212, 212, 0.651);
             text-align: center;
             float: left;
-            width: 300px;
+            width: 20%;
             height: 850px;
         }
         
         .right-container {
             float: left;
-            width: 1200px;
+            width: 80%;
             height: 850px;
         }
         .button-box{
@@ -128,293 +129,9 @@
     
         
     </style>
-    
-    <script>
-        
-        
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            initMap(); // 맵 초기화
-              
-
-            // 차량 버튼에 클릭 이벤트 리스너 추가
-            var carButtons = document.querySelectorAll(".car-button");
-            carButtons.forEach(function(button) {
-                button.addEventListener("click", function() {
-                    var carNum = button.value;
-
-                    // .dateSelect 섹션 표시 및 내용 업데이트
-                    var dateSelectSection = document.querySelector(".dateSelect");
-                    dateSelectSection.style.display = "block";
-                    
-                    var selectedCarNumber = document.getElementById("selectedCarNumber");
-                    selectedCarNumber.textContent = carNum;
-                });
-            });
-
-            // #close 버튼에 클릭 이벤트 리스너 추가
-            var closeButton = document.getElementById("close");
-            closeButton.addEventListener("click", function() {
-                var dateSelectSection = document.querySelector(".dateSelect");
-                dateSelectSection.style.display = "none";
-            });
-        });
-        
-        var map; // 맵 객체의 전역 변수 선언
-        var baseLayer; // 기본 레이어 저장 변수
-        var additionalLayers = []; // 추가 레이어 배열
-        
-        function initMap() {
-            // 맵 및 초기 레이어를 초기화합니다.
-            var yonginCoords = ol.proj.fromLonLat([127.1775, 37.2410]);
-            
-            // 기본 레이어 설정
-            baseLayer = new ol.layer.Tile({
-                source: new ol.source.XYZ({
-                    url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Base/{z}/{y}/{x}.png'
-                })
-            });
-            
-            additionalLayers.push(
-                // 추가 레이어 1 (City)
-                new ol.layer.Tile({
-                    source: new ol.source.TileWMS({
-                        url: 'http://localhost:8000/geoserver/test/wms',
-                        params: {
-                            'LAYERS': 'opengis:emd',
-                            'TILED': true,
-                        },
-                        serverType: 'geoserver',
-                    }),
-                }),
-                // 추가 레이어 2 (LINK)
-                new ol.layer.Tile({
-                    source: new ol.source.TileWMS({
-                        url: 'http://localhost:8000/geoserver/test/wms',
-                        params: {
-                            'LAYERS': 'opengis:LINK',
-                            'TILED': true,
-                        },
-                        serverType: 'geoserver',
-                    }),
-                }),
-                // 추가 레이어 3 (NODE)
-                new ol.layer.Tile({
-                    source: new ol.source.TileWMS({
-                        url: 'http://localhost:8000/geoserver/test/wms',
-                        params: {
-                            'LAYERS': 'opengis:NODE',
-                            'TILED': true,
-                        },
-                        serverType: 'geoserver',
-                    }),
-                })
-            );
-            
-            map = new ol.Map({
-                layers: [
-                    baseLayer, // 기본 레이어 추가
-                    ...additionalLayers // 추가 레이어들 추가
-                ],
-                target: 'map', // div id map을 선택함
-                view: new ol.View({
-                    center: yonginCoords,
-                    zoom: 11,
-                }),
-            });
-        }
-        
-        // 레이어 업데이트 함수
-        function updateMapLayer(layerSource) {
-            baseLayer.setSource(layerSource);
-        }
-        
-        function switchToBasic() {
-            updateMapLayer(new ol.source.XYZ({
-                url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Base/{z}/{y}/{x}.png'
-            }));
-        }
-        
-        function switchToSatellite() {
-            updateMapLayer(new ol.source.XYZ({
-                url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Satellite/{z}/{y}/{x}.jpeg'
-            }));
-        }
-        
-        var hybridLayer = null; // 하이브리드 레이어 변수
-        
-        function switchToHybrid() {
-            if (hybridLayer) {
-                // 하이브리드 레이어가 이미 추가되어 있는 경우, 제거
-                map.removeLayer(hybridLayer);
-                hybridLayer = null;
-            } else {
-                // 하이브리드 레이어가 추가되어 있지 않은 경우, 추가
-                hybridLayer = new ol.layer.Tile({
-                    source: new ol.source.XYZ({
-                        url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Hybrid/{z}/{y}/{x}.png'
-                    })
-                });
-                map.addLayer(hybridLayer);
-            }
-        }
-       
-        
-        
-      	//get방식 요청
-        function fetchGet(url,callback){
-        	console.log(url);
-        	console.log(callback);
-        	
-        	try {
-        	//url 요청
-        	fetch(url)
-        		//요청 결과json 문자열을 javascript 객체로 반환
-        		.then(response => response.json())
-        		//매개로 받은 콜백함수 실행
-        		.then(map => callback(map));
-        		
-        	} catch (e) {
-        		console.log(e);
-        	}
-        	
-        	
-        }
-
-        //post방식 요청
-        function fetchPost(url,obj,callback){
-        	console.log(url);
-        	console.log(callback);
-        	
-        	try {
-        		//url 요청
-        		fetch(url,{method : 'post'
-        					,headers : {'Content-Type' : 'application/json'} 
-        					,body  : JSON.stringify(obj)
-        			  })
-        			//요청 결과json 문자열을 javascript 객체로 반환
-        			.then(response => response.json())
-        			//매개로 받은 콜백함수 실행
-        			.then(map => callback(map))	
-        		} catch (e) {
-        			console.log(e);       		
-        		}
-        }
-
-        function getRatio(){
-        	let car_num = document.querySelector('#selectedCarNumber').textContent;
-        	let encodedCarNum = encodeURIComponent(car_num);
-        	let date = document.querySelector('#selectDate').value;
-	
-        	//전달할 객체로 생성
-        	let obj = {'car_num' : car_num
-        			,  'date' : date
-        			}
-        	
-        	fetchPost('/test/getRatio/',obj,drawRatio)
-
-        }
-        
-        function drawRatio(fetchmap){
-        	let nodata = document.querySelector("#resbox"); 
-			
-			if(fetchmap.ratio === null){
-				
-				map.getLayers().clear();
-				
-				// 기본 레이어 및 추가 레이어들 다시 추가
-		        map.addLayer(baseLayer);
-		        additionalLayers.forEach(layer => {
-		            map.addLayer(layer);
-		        });
-		        
-				nodata.innerHTML = '<p><b>데이터가 없습니다.</b></p>'
-				
-				
-			}else{
-	        	let ratio = fetchmap.ratio.ratio;
-	        	let time = fetchmap.ratio.time;
-	        	
-				console.log(ratio)
-				console.log(time)
-				
-				nodata.innerHTML = '';//HTML작성하기전에 한번 초기화해서 백지 만들어주기
-				
-				nodata.innerHTML += ''
-								  +	'<p>운행 시간 : <b>'+time+'</b></p>'
-			        			  +	'<p>청소 비율 : <b>'+ratio+'%</b></p>';
-				
-				
-				
-				var carNum = document.querySelector('#selectedCarNumber').textContent;
-		        var date = document.querySelector('#selectDate').value; 
-		        console.log("패치 변수",carNum)
-		        console.log("패치 변수",date)
-		        
-		        
-		        var clean_O = new ol.layer.Tile({
-		            source: new ol.source.TileWMS({
-		                url: 'http://localhost:8000/geoserver/test/wms',
-		                params: {
-		                    'LAYERS': 'opengis:Clean_O',
-		                    'TILED': true,
-		                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
-		                },
-		                serverType: 'geoserver',
-		            }),
-		        });
-	
-		        var clean_X = new ol.layer.Tile({
-		            source: new ol.source.TileWMS({
-		                url: 'http://localhost:8000/geoserver/test/wms',
-		                params: {
-		                    'LAYERS': 'opengis:Clean_X',
-		                    'TILED': true,
-		                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
-		                },
-		                serverType: 'geoserver',
-		            }),
-		        });
-		        
-		        var clean_path = new ol.layer.Tile({
-		            source: new ol.source.TileWMS({
-		                url: 'http://localhost:8000/geoserver/test/wms',
-		                params: {
-		                    'LAYERS': 'opengis:Clean_path',
-		                    'TILED': true,
-		                    'VIEWPARAMS': "date:" + date 
-		                },
-		                serverType: 'geoserver',
-		            }),
-		        });
-		        
-		        
-		        
-		        
-		     	// 맵에 있는 모든 레이어 제거
-		        map.getLayers().clear();
-	
-		        // 기본 레이어 및 추가 레이어들 다시 추가
-		        map.addLayer(baseLayer);
-		        additionalLayers.forEach(layer => {
-		            map.addLayer(layer);
-		        });
-	
-		        // clean_O, clean_X 레이어 맵에 추가
-		        map.addLayer(clean_O);
-		        map.addLayer(clean_X);
-		        map.addLayer(clean_path);
-				
-				}
-		
-			
-        }
-
-
-    </script>
 </head>
 <body>
-    <div class="container">
+    <div class="maincontainer">
         <div class="left-container">
             
             <div class="button-box">
@@ -482,6 +199,371 @@
     
     
     
-    
+    <script>
+        
+        
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            initMap(); // 맵 초기화
+              
+
+        });
+        
+        
+        
+        
+     	// 차량 버튼에 클릭 이벤트 리스너 추가
+        var carButtons = document.querySelectorAll(".car-button");
+        carButtons.forEach(function(button) {
+            button.addEventListener("click", function() {
+                var carNum = button.value;
+
+                // .dateSelect 섹션 표시 및 내용 업데이트
+                var dateSelectSection = document.querySelector(".dateSelect");
+                dateSelectSection.style.display = "block";
+               
+                var selectedCarNumber = document.getElementById("selectedCarNumber");
+                selectedCarNumber.textContent = carNum;
+            });
+        });
+
+        // #close 버튼에 클릭 이벤트 리스너 추가
+        var closeButton = document.getElementById("close");
+        closeButton.addEventListener("click", function() {
+            var dateSelectSection = document.querySelector(".dateSelect");
+            dateSelectSection.style.display = "none";
+        });
+        
+        var map; // 맵 객체의 전역 변수 선언
+        
+     	// 맵 및 초기 레이어를 초기화합니다.
+        var yonginCoords = ol.proj.fromLonLat([127.1775, 37.2410]);
+        
+        // 기본 레이어 설정
+        var base = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Base/{z}/{y}/{x}.png'
+            })
+        });
+        
+        var hybrid = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Hybrid/{z}/{y}/{x}.png'
+            })
+        });
+        
+        var emd = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://localhost:8000/geoserver/test/wms',
+                params: {
+                    'LAYERS': 'opengis:emd',
+                    'TILED': true,
+                },
+                serverType: 'geoserver',
+            }),
+        });
+        
+        var link = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://localhost:8000/geoserver/test/wms',
+                params: {
+                    'LAYERS': 'opengis:LINK',
+                    'TILED': true,
+                },
+                serverType: 'geoserver',
+            }),
+        });
+        
+        var node = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://localhost:8000/geoserver/test/wms',
+                params: {
+                    'LAYERS': 'opengis:NODE',
+                    'TILED': true,
+                },
+                serverType: 'geoserver',
+            }),
+        });
+        
+        
+        function initMap() {
+        	
+        	map = new ol.Map({
+                layers: [
+                    base, // 기본 레이어 추가
+                    emd,
+                    link,
+                    node
+                ],
+                target: 'map', // div id map을 선택함
+                view: new ol.View({
+                    center: yonginCoords,
+                    zoom: 11,
+                }),
+            });
+            
+        }
+        
+        // 레이어 업데이트 함수
+        function updateMapLayer(layerSource) {
+            base.setSource(layerSource);
+        }
+        
+        function switchToBasic() {
+            updateMapLayer(new ol.source.XYZ({
+                url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Base/{z}/{y}/{x}.png'
+            }));  
+        }
+        
+        function switchToSatellite() {
+            updateMapLayer(new ol.source.XYZ({
+                url: 'http://api.vworld.kr/req/wmts/1.0.0/1BED7823-51FA-30E5-8664-4B59FDCC983E/Satellite/{z}/{y}/{x}.jpeg'
+            }));
+        }
+        
+        function switchToHybrid() {
+            var hybridCheckbox = document.getElementById("btncheck3");
+
+            if (hybridCheckbox.checked) {
+                // 체크박스가 체크되었을 때만 하이브리드 레이어 추가
+                if (!map.getLayers().getArray().includes(hybrid)) {
+                    map.addLayer(hybrid);
+                }
+            } else {
+                // 체크박스가 체크 해제되었을 때 하이브리드 레이어 제거
+                map.removeLayer(hybrid);
+            }
+        }
+
+
+       
+        
+        
+      	//get방식 요청
+        function fetchGet(url,callback){
+        	console.log(url);
+        	console.log(callback);
+        	
+        	try {
+        	//url 요청
+        	fetch(url)
+        		//요청 결과json 문자열을 javascript 객체로 반환
+        		.then(response => response.json())
+        		//매개로 받은 콜백함수 실행
+        		.then(map => callback(map));
+        		
+        	} catch (e) {
+        		console.log(e);
+        	}
+        	
+        	
+        }
+
+        //post방식 요청
+        function fetchPost(url,obj,callback){
+        	console.log(url);
+        	console.log(callback);
+        	
+        	try {
+        		//url 요청
+        		fetch(url,{method : 'post'
+        					,headers : {'Content-Type' : 'application/json'} 
+        					,body  : JSON.stringify(obj)
+        			  })
+        			//요청 결과json 문자열을 javascript 객체로 반환
+        			.then(response => response.json())
+        			//매개로 받은 콜백함수 실행
+        			.then(map => callback(map))	
+        		} catch (e) {
+        			console.log(e);       		
+        		}
+        }
+
+        function getRatio(){
+        	let car_num = document.querySelector('#selectedCarNumber').textContent;
+        	let encodedCarNum = encodeURIComponent(car_num);
+        	let date = document.querySelector('#selectDate').value;
+	
+        	//전달할 객체로 생성
+        	let obj = {'car_num' : car_num
+        			,  'date' : date
+        			}
+        	
+        	fetchPost('/test/getRatio/',obj,drawRatio)
+
+        }
+        
+        function drawRatio(fetchmap){
+        	let nodata = document.querySelector("#resbox"); 
+        	
+        	// hybrid 체크여부 값 가져오기
+            let hybridCheckbox = document.getElementById("btncheck3");
+        	
+        	
+			
+			if(fetchmap.ratio === null){
+				
+				//map요소에 레이어들 초기화
+				map.getLayers().clear();
+				
+				// 기본 레이어 다시 추가
+		        map.addLayer(base);
+		        map.addLayer(emd);
+		        map.addLayer(link);
+		        map.addLayer(node);
+		        
+		     	// hybrid 체크박스가 체크되었을 때만 hybrid 레이어 추가
+		        if (hybridCheckbox.checked) {
+		            map.addLayer(hybrid);
+		        }
+		        
+				nodata.innerHTML = '<p><b>데이터가 없습니다.</b></p>'
+				
+			}else{
+	        	let ratio = fetchmap.ratio.ratio;
+	        	let time = fetchmap.ratio.time;
+	        	
+				console.log(ratio) //변수 잘 들어오는지 체크
+				console.log(time)  //변수 잘 들어오는지 체크
+				
+				nodata.innerHTML = '';//HTML작성하기전에 한번 초기화해서 백지 만들어주기
+				
+				nodata.innerHTML += ''
+								  +	'<p>운행 시간 : <b>'+time+'</b></p>'
+			        			  +	'<p>청소 비율 : <b>'+ratio+'%</b></p>';
+				
+				
+				//차량 번호 값 가져오기
+				var carNum = document.querySelector('#selectedCarNumber').textContent;
+				
+				//날짜 값 가져오기
+		        var date = document.querySelector('#selectDate').value; 
+		        
+		        console.log("패치 변수",carNum) //변수 잘 들어오는지 체크
+		        console.log("패치 변수",date)   //변수 잘 들어오는지 체크
+		        
+		        
+		        /* ----------SQL뷰 파라미터 레이어들 추가하는 곳---------- */
+		        //청소O 레이어
+		        var clean_O = new ol.layer.Tile({
+	            source: new ol.source.TileWMS({
+	                url: 'http://localhost:8000/geoserver/test/wms',
+	                params: {
+	                    'LAYERS': 'opengis:Clean_O',
+	                    'TILED': true,
+	                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
+	                },
+	                serverType: 'geoserver',
+		            }),
+		        });
+		        
+		        //청소X 레이어
+		        var clean_X = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_X',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date + ";car_num:" + carNum
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+		        
+		        //청소 경로 레이어
+		        var clean_path = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_path',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date 
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+		        
+		        //청소 시작점
+		        var clean_start = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_start',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date 
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+		        
+		        //청소 끝점
+		        var clean_end = new ol.layer.Tile({
+		            source: new ol.source.TileWMS({
+		                url: 'http://localhost:8000/geoserver/test/wms',
+		                params: {
+		                    'LAYERS': 'opengis:Clean_end',
+		                    'TILED': true,
+		                    'VIEWPARAMS': "date:" + date 
+		                },
+		                serverType: 'geoserver',
+		            }),
+		        });
+	        
+		        
+		        
+		        //---------------지도 그리는 부분 -------------
+		        
+		      	//map 요소에 레이어들 초기화
+		        map.getLayers().clear();
+	
+		        // 기본 레이어 다시 추가------------------------
+		        map.addLayer(base);
+		        map.addLayer(emd);
+		        map.addLayer(link);
+		        map.addLayer(node);
+		        
+		     	// hybrid 체크박스가 체크되었을 때만 hybrid 레이어 추가
+		        if (hybridCheckbox.checked) {
+		            map.addLayer(hybrid);
+		        }
+
+		        // 지오서버에서 SQL뷰 파라미터 레이어들 맵에 추가---------
+		        map.addLayer(clean_O);
+		        map.addLayer(clean_X);
+		        map.addLayer(clean_path);
+		        map.addLayer(clean_start);
+		        map.addLayer(clean_end);
+
+		        //새로받은 위도 경도값의 위치로 부드럽게 줌인하기
+		        var newlon = 127.0695
+		        var newlat = 37.2987
+		        
+		        zoomToPosition(newlon, newlat, 15); // 줌값 조절하는곳
+		     
+		        
+			}
+		
+			
+        }
+        
+        //줌 애니메이션 메소드
+        function zoomToPosition(lon, lat, zoomLevel) {
+            var view = map.getView();
+            var currentCenter = view.getCenter();
+            var currentZoom = view.getZoom();
+
+            var duration = 500; // 애니메이션 지속 시간. 값이 작을수록 줌이 빠름
+
+            map.getView().animate({
+                center: ol.proj.fromLonLat([lon, lat]),
+                zoom: zoomLevel,
+                duration: duration,
+            });
+        }
+
+
+
+
+    </script>    
 </body>
 </html>
