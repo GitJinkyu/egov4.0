@@ -35,8 +35,8 @@
         .maincontainer {
         	background-color: white;
             width:1600px;
-            height:850px;
-            margin: 50px auto;
+            height:900px;
+            margin: 15px auto;
             
 
             border-radius: 15px; /* 모서리를 20px 둥글게 만듦 */
@@ -47,7 +47,7 @@
             float: left;
             width: 20%;
             height: 100%;
-            padding: 5px;
+            padding: 5px 0 5px 5px; /* 상단, 우측, 하단, 좌측 순서 */
             
         }
         
@@ -92,17 +92,42 @@
 
         }
         
-        .carSelect{
-            background-color: white;
-            width: 280px;
-            border-radius: 15px;
-            justify-content: center;
-            align-items : center;
-            margin: 0 auto;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-            
+        .carSelect {
+		    background-color: white;
+		    width: 280px;
+		    height: 180px;
+		    border-radius: 15px;
+		    justify-content: center;
+		    align-items: center;
+		    margin: 0 auto;
+		    padding-top: 20px;
+		    padding-bottom: 20px;
+		    margin-bottom: 30px;
+		    
+		}
+		
+		/* WebKit 브라우저(Chrome, Safari)에서 스크롤바 전체 스타일 지정 */
+		#selectcarlist::-webkit-scrollbar {
+		    width: 5px; /* 스크롤바 너비 조절 */
+	
+		}
+		
+		/* 스크롤바막대 설정 */
+		#selectcarlist::-webkit-scrollbar-thumb {
+		    background-color: gray;
+		    border-radius: 5px; /* 막대를 둥글게 깍음 */ 
+		    
+		}
+        
+        #selectcarlist{
+            width: 275px;
+        	height: 80px;
+        	overflow: auto; /* 스크롤바 감추기 */
+		
+		    /* 스크롤이 필요한 경우 스크롤 스타일 */
+		    scrollbar-width: thin;
+		    scrollbar-color: transparent transparent;
+        
         }
         
         .dateSelect{
@@ -114,12 +139,13 @@
             margin: 0 auto;
             padding-top: 20px;
             padding-bottom: 20px;
+            margin-bottom: 30px;
             display: none;
 
         }
         
         #datetext{
-        text-align: left;
+        	text-align: left;
         
         }
 
@@ -138,7 +164,6 @@
         /* #close 버튼의 배경 색상 제거 */
         #close {
             background-color: transparent !important;
-
         }
 
         /* .carbtn 버튼의 클릭 스타일 */
@@ -148,10 +173,32 @@
 
         /* #close 버튼의 클릭 스타일 */
         #close:focus {
-
             border: 1px solid rgb(0, 0, 0); /* 클릭 시 보더 라인 추가 */
         }
 
+
+		.uploadbox{
+			background-color: white;
+            width: 280px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+		    flex-direction: column;
+		    justify-content: center;
+		    align-items: center;
+            margin: 0 auto;
+            border: 2px dashed #ccc; /* 드래그 앤 드롭 영역을 시각적으로 나타내는 테두리 스타일 */
+    		text-align: center; /* 내용 가운데 정렬 */
+    		
+			
+		}
+		
+		.uploadbox p {
+		    margin: 0; /* 기본 마진 제거 */
+		}
+		
+		
+		
         
     </style>
 </head>
@@ -192,7 +239,6 @@
                 </div>
                 
                 <div class="dateSelect">
-
 				    <p><b><span id="selectedCarNumber"></span></b></p>
 				    <hr>
 				    <p>
@@ -212,6 +258,12 @@
 				    <hr>
 				    <button id="close">접기</button>
 				</div>
+				
+				<div class="uploadbox" id="dropbox">
+				    <p>파일을 여기로 드래그 앤 드롭하세요.</p>
+				    <input type="file" id="fileInput" style="display: none;">
+				</div>
+
 		   </div>
 
             
@@ -625,7 +677,59 @@
         }
 
 
+     	// 드래그 앤 드롭 이벤트 처리
+		var dropbox = document.getElementById('dropbox');
+		
+		dropbox.addEventListener('dragenter', function(e) {
+		    e.preventDefault();
+		    dropbox.classList.add('dragging');
+		});
+		
+		dropbox.addEventListener('dragover', function(e) {
+		    e.preventDefault();
+		    dropbox.classList.add('dragging');
+		});
+		
+		dropbox.addEventListener('dragleave', function() {
+		    dropbox.classList.remove('dragging');
+		});
+		
+		dropbox.addEventListener('drop', function(e) {
+		    e.preventDefault();
+		    dropbox.classList.remove('dragging');
+		    
+		    var fileInput = document.getElementById('fileInput');
+		    var files = e.dataTransfer.files;
+		
+		 	// 선택한 파일을 FormData 객체에 추가
+		    var formData = new FormData();
+		    formData.append('file', files[0]);
 
+		    // POST 요청을 보낼 URL
+		    var url = '/test/insertCSV';
+
+		    // POST 요청 보내기
+		    fetch(url, {
+		        method: 'POST',
+		        body: formData
+		    })
+		    .then(response => {
+		        if (response.ok) {
+		            // 성공적으로 업로드된 경우 처리할 내용을 여기에 추가
+		        } else {
+		            // 업로드 실패 또는 오류 발생 시 처리할 내용을 여기에 추가
+		        }
+		    })
+		    .catch(error => {
+		        // 오류 발생 시 처리할 내용을 여기에 추가
+		    });
+		});
+		
+		// 파일 입력 필드를 클릭해서 파일을 선택하는 경우를 처리
+		var fileInput = document.getElementById('fileInput');
+		fileInput.addEventListener('change', function() {
+		    // 파일 업로드 로직을 여기에 추가
+		});
 
     </script>    
 </body>
