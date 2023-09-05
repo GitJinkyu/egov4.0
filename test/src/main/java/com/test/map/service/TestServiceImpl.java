@@ -25,5 +25,11 @@ public class TestServiceImpl implements TestService {
 		return mapper.getratio(vo);
 	}
 
+	@Override
+	public int insertCSV(localVO vo) {
+		
+		return mapper.insertCSV(vo);
+	}
+
 
 }

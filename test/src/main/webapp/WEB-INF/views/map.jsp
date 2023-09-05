@@ -259,9 +259,8 @@
 				    <button id="close">접기</button>
 				</div>
 				
-				<div class="uploadbox" id="dropbox">
+				<div class="uploadbox">
 				    <p>파일을 여기로 드래그 앤 드롭하세요.</p>
-				    <input type="file" id="fileInput" style="display: none;">
 				</div>
 
 		   </div>
@@ -675,61 +674,54 @@
                 duration: duration,
             });
         }
+        
+        const uploadbox = document.querySelector('.uploadbox'); // 업로드 박스 엘리먼트 선택
+
+	     // 드래그 앤 드롭 이벤트 처리
+	     uploadbox.addEventListener('dragover', (e) => {
+	       e.preventDefault();
+	       uploadbox.classList.add('dragover'); // 드래그 중일 때 스타일 변경
+	     });
+	
+	     uploadbox.addEventListener('dragleave', () => {
+	       uploadbox.classList.remove('dragover'); // 드래그 떠났을 때 스타일 복원
+	     });
+	
+	     uploadbox.addEventListener('drop', (e) => {
+	       e.preventDefault();
+	       uploadbox.classList.remove('dragover'); // 드롭 시 스타일 복원
+	
+	       const files = e.dataTransfer.files; // 드래그한 파일 가져오기
+	       if (files.length > 0) {
+	         handleFileUpload(files); // 파일 업로드 처리 함수 호출
+	       }
+	     });
+	
+	     // 파일 업로드 처리 함수 (이전 예제와 동일)
+	     function handleFileUpload(files) {
+	       const formData = new FormData();
+	
+	       for (let i = 0; i < files.length; i++) {
+	         formData.append('files', files[i]);
+	       }
+	
+	       fetch('/test/insertMultipleCSV', {
+	         method: 'POST',
+	         body: formData,
+	       })
+	         .then((response) => response.text())
+	         .then((result) => {
+	           console.log(result); // 서버에서의 응답 (성공 또는 실패)
+	         })
+	         .catch((error) => {
+	           console.error('에러:', error);
+	         });
+	     }
 
 
-     	// 드래그 앤 드롭 이벤트 처리
-		var dropbox = document.getElementById('dropbox');
-		
-		dropbox.addEventListener('dragenter', function(e) {
-		    e.preventDefault();
-		    dropbox.classList.add('dragging');
-		});
-		
-		dropbox.addEventListener('dragover', function(e) {
-		    e.preventDefault();
-		    dropbox.classList.add('dragging');
-		});
-		
-		dropbox.addEventListener('dragleave', function() {
-		    dropbox.classList.remove('dragging');
-		});
-		
-		dropbox.addEventListener('drop', function(e) {
-		    e.preventDefault();
-		    dropbox.classList.remove('dragging');
-		    
-		    var fileInput = document.getElementById('fileInput');
-		    var files = e.dataTransfer.files;
-		
-		 	// 선택한 파일을 FormData 객체에 추가
-		    var formData = new FormData();
-		    formData.append('file', files[0]);
 
-		    // POST 요청을 보낼 URL
-		    var url = '/test/insertCSV';
 
-		    // POST 요청 보내기
-		    fetch(url, {
-		        method: 'POST',
-		        body: formData
-		    })
-		    .then(response => {
-		        if (response.ok) {
-		            // 성공적으로 업로드된 경우 처리할 내용을 여기에 추가
-		        } else {
-		            // 업로드 실패 또는 오류 발생 시 처리할 내용을 여기에 추가
-		        }
-		    })
-		    .catch(error => {
-		        // 오류 발생 시 처리할 내용을 여기에 추가
-		    });
-		});
-		
-		// 파일 입력 필드를 클릭해서 파일을 선택하는 경우를 처리
-		var fileInput = document.getElementById('fileInput');
-		fileInput.addEventListener('change', function() {
-		    // 파일 업로드 로직을 여기에 추가
-		});
+
 
     </script>    
 </body>

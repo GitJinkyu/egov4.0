@@ -13,5 +13,7 @@ public interface TestMapper {
 	
 	public pointsVO getratio (pointsVO vo);
 	
+	public int insertCSV (localVO vo);
+	
 
 }

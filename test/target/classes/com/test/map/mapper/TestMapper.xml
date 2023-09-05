@@ -33,5 +33,14 @@
 	]]>
 	</select>
 	
+	
+	<insert id="insertCSV">
+	    INSERT INTO public.points(
+		lon, lat,geom,car_num,date,time,noise,rpm)
+		VALUES (#{lon},#{lat},ST_SetSRID(ST_MakePoint(#{lon}::numeric, #{lon}::numeric), 4326),#{car_num},#{date},#{time},#{noise},#{rpm})
+	</insert>
+	
+	
+	
     
 </mapper>

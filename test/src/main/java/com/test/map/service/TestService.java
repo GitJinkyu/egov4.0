@@ -2,7 +2,7 @@ package com.test.map.service;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
+
 import org.springframework.stereotype.Service;
 
 
@@ -15,4 +15,6 @@ public interface TestService {
 	public List<localVO> getCarList ();
 	
 	public pointsVO getratio (pointsVO vo);
+	
+	public int insertCSV(localVO vo);
 }
