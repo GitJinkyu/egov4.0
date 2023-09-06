@@ -675,6 +675,7 @@
             });
         }
         
+        
         const uploadbox = document.querySelector('.uploadbox'); // 업로드 박스 엘리먼트 선택
 
 	     // 드래그 앤 드롭 이벤트 처리

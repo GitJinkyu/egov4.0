@@ -27,7 +27,6 @@
     (SELECT TO_CHAR(lat::numeric, 'FM9999.9999')
      FROM points
      WHERE car_num = #{car_num} AND date = #{date} AND "time" = (SELECT MIN("time") FROM points WHERE car_num = #{car_num} AND date = #{date})) AS start_lat
-    
 
 
 	]]>
@@ -39,6 +38,26 @@
 		lon, lat,geom,car_num,date,time,noise,rpm)
 		VALUES (#{lon},#{lat},ST_SetSRID(ST_MakePoint(#{lon}::numeric, #{lon}::numeric), 4326),#{car_num},#{date},#{time},#{noise},#{rpm})
 	</insert>
+	
+	
+	<insert id="insertMultipleCSV" parameterType="java.util.List">
+    INSERT INTO public.points (
+        lon, lat, geom, car_num, date, time, noise, rpm
+    )
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+        (
+        #{item.lon},
+        #{item.lat},
+        ST_SetSRID(ST_MakePoint(#{item.lon}::numeric, #{item.lon}::numeric), 4326),
+        #{item.car_num},
+        #{item.date},
+        #{item.time},
+        #{item.noise},
+        #{item.rpm}
+        )
+    </foreach>
+</insert>
 	
 	
 	

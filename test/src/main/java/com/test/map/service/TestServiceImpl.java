@@ -31,5 +31,11 @@ public class TestServiceImpl implements TestService {
 		return mapper.insertCSV(vo);
 	}
 
+	@Override
+	public int insertMultipleCSV(List<localVO> voList) {
+		
+		return mapper.insertMultipleCSV(voList);
+	}
+
 
 }

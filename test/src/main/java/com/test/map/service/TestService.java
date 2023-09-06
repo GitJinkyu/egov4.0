@@ -17,4 +17,6 @@ public interface TestService {
 	public pointsVO getratio (pointsVO vo);
 	
 	public int insertCSV(localVO vo);
+	
+	public int insertMultipleCSV(List<localVO> voList);
 }

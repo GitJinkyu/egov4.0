@@ -15,5 +15,7 @@ public interface TestMapper {
 	
 	public int insertCSV (localVO vo);
 	
+	public int insertMultipleCSV(List<localVO> voList);
+	
 
 }
