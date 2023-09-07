@@ -198,6 +198,50 @@
 		}
 		
 		
+/* 모달 스타일 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  width: 400px;
+  height: 300px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+/* 스타일이 추가된 부분만 표시 */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px); /* 흐림 효과 */
+  z-index: 1040;
+  display: none;
+}
+
+/* 모달 닫기 버튼 스타일 */
+.close {
+  float: right;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.close:hover {
+  color: red;
+}
 		
         
     </style>
@@ -273,7 +317,24 @@
         </div>
     </div>
     
-    
+<!-- 모달 창 -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <h2>로그인</h2>
+    <form id="loginForm">
+      <label for="username">ID:</label>
+      <input type="text" id="username" name="username">
+      <br>
+      <label for="password">PW:</label>
+      <input type="password" id="password" name="password">
+      <br>
+      <input type="submit" value="로그인">
+    </form>
+  </div>
+</div>
+
+<!-- 모달시 배경 블러 처리용 요소 -->
+<div class="modal-backdrop" id="backdrop"></div>
     
     
     <script>
@@ -282,6 +343,7 @@
         
         document.addEventListener("DOMContentLoaded", function() {
             initMap(); // 맵 초기화
+            openModal();
               
 
         });
@@ -721,8 +783,42 @@
 
 
 
+	  // 모달 열기
+	     function openModal() {
+	       let backdrop = document.getElementById('backdrop');
+	       let modal = document.getElementById("myModal");
+	       
+	       modal.style.display = "block";
+	       backdrop.style.display = 'block';
+	     }
+
+	     // 모달 닫기
+	     function closeModal() {
+	       let backdrop = document.getElementById('backdrop');
+	       let modal = document.getElementById("myModal");
+	       
+	       modal.style.display = "none";
+	       backdrop.style.display = 'none';
+	     }
+
+	     // 모달 닫기 버튼 클릭 시 닫기
+	     /* var closeBtn = document.getElementsByClassName("close")[0];
+	     closeBtn.addEventListener("click", closeModal); */
 
 
+	     // 로그인 폼 제출 시 동작
+	     var loginForm = document.getElementById("loginForm");
+	     loginForm.addEventListener("submit", function(event) {
+	       event.preventDefault(); // 폼 제출 기본 동작 막기
+	       var username = document.getElementById("username").value;
+	       var password = document.getElementById("password").value;
+
+	       // 여기에서 로그인 처리를 수행하고, 성공하면 closeModal() 함수를 호출하여 모달을 닫을 수 있습니다.
+	       // 만약 로그인에 실패한다면 적절한 오류 메시지를 표시할 수 있습니다.
+	       // 로그인 처리 코드를 추가해주세요.
+	     });
+
+	
 
     </script>    
 </body>
