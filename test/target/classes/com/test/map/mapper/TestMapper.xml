@@ -6,6 +6,10 @@
         SELECT car_num FROM car_list
     </select>
     
+    <select id="login" resultType="com.test.map.vo.MemberVO">
+        SELECT * from member where id= #{id} and pw=#{pw}
+    </select>
+    
     
     <select id="getratio" resultType="com.test.map.vo.pointsVO">
     <![CDATA[

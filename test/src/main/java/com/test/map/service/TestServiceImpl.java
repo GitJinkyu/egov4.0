@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.test.map.mapper.TestMapper;
+import com.test.map.vo.MemberVO;
 import com.test.map.vo.localVO;
 import com.test.map.vo.pointsVO;
 
@@ -36,6 +37,14 @@ public class TestServiceImpl implements TestService {
 		
 		return mapper.insertMultipleCSV(voList);
 	}
+
+	@Override
+	public MemberVO login(MemberVO vo) {
+		return mapper.login(vo);
+	}
+
+
+
 
 
 }

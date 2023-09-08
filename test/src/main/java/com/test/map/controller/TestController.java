@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.test.map.service.TestService;
-
+import com.test.map.vo.MemberVO;
 import com.test.map.vo.localVO;
 import com.test.map.vo.pointsVO;
 
@@ -64,6 +66,31 @@ public class TestController {
 
 	    Map<String, Object> map = new HashMap<>();
 	    map.put("ratio", ratio);
+
+
+	    return map;
+	}
+	
+	@PostMapping("loginAction")
+	@ResponseBody 
+	public Map<String, Object> login(@RequestBody MemberVO vo, HttpSession session) {
+		
+		System.out.println("들어오니?");
+
+		String msg ="";
+		
+		MemberVO member = service.login(vo);
+		System.out.println("멤버" + member);
+		
+		if(member == null) {
+			msg="fail";
+		}else if(member != null) {
+			session.setAttribute("loggedInMember", member);
+			msg="ok";
+		}
+		
+		Map<String, Object> map = new HashMap<>();
+	    map.put("msg", msg);
 
 
 	    return map;
@@ -130,7 +157,6 @@ public class TestController {
 	                        break;
 	                    case "time":
 	                    	value = "0" + value;
-	                        
 	                        vo.setTime(LocalTime.parse(value)); // 문자열을 LocalTime으로 파싱
 	                        break;
 	                    case "noise":

@@ -322,13 +322,16 @@
   <div class="modal-content">
     <h2>로그인</h2>
     <form id="loginForm">
+    <br>
+    <div id="msgbox"></div>
+    <br>
       <label for="username">ID:</label>
       <input type="text" id="username" name="username">
       <br>
       <label for="password">PW:</label>
       <input type="password" id="password" name="password">
       <br>
-      <input type="submit" value="로그인">
+      <input type="submit" id="loginbtn" value="로그인">
     </form>
   </div>
 </div>
@@ -343,7 +346,15 @@
         
         document.addEventListener("DOMContentLoaded", function() {
             initMap(); // 맵 초기화
-            openModal();
+            
+         	// 세션에서 loggedInMember 가져오기
+            var loggedInMember = '<%= session.getAttribute("loggedInMember") %>';
+			console.log("세션? = =",loggedInMember)
+			
+            // loggedInMember가 null일 때만 openModal 함수 실행
+            if (loggedInMember === 'null') {
+			    openModal(); // 로그인 모달창 띄우기
+			}
               
 
         });
@@ -506,6 +517,7 @@
         	
         	
         }
+      	
 
         //post방식 요청
         function fetchPost(url,obj,callback){
@@ -527,6 +539,7 @@
         		}
         }
 
+        
         //청소비율,운행시간 조회
         function getRatio(){
         	let car_num = document.querySelector('#selectedCarNumber').textContent;
@@ -810,14 +823,36 @@
 	     var loginForm = document.getElementById("loginForm");
 	     loginForm.addEventListener("submit", function(event) {
 	       event.preventDefault(); // 폼 제출 기본 동작 막기
-	       var username = document.getElementById("username").value;
-	       var password = document.getElementById("password").value;
+	       var id = document.getElementById("username").value;
+	       var pw = document.getElementById("password").value;
 
-	       // 여기에서 로그인 처리를 수행하고, 성공하면 closeModal() 함수를 호출하여 모달을 닫을 수 있습니다.
-	       // 만약 로그인에 실패한다면 적절한 오류 메시지를 표시할 수 있습니다.
-	       // 로그인 처리 코드를 추가해주세요.
+		     //전달할 객체로 생성
+	       let obj = {'id' : id
+	       			,  'pw' : pw
+	       			}
+	       	
+	       fetchPost('/test/loginAction/',obj,loginAction)
+	       
 	     });
 
+	     function loginAction(map){
+	   	    const msgBox = document.querySelector("#msgbox");
+	   	    
+	   	    console.log(map.msg);
+	   	    
+	    	 	//로그인성공
+	   	 	if (map.msg === "fail") {
+	   	 		//메세지처리
+	   	        msgBox.innerHTML = "아이디와 비밀번호를 확인해주세요";
+	   	 		
+	   	 		//로그인실패
+	   	    } else if (map.msg === "ok") {
+	   	      	//모달 닫기
+	   	        closeModal();
+	   	    }
+	    	 
+	    	 
+	     }
 	
 
     </script>    

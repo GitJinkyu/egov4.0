@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-
+import com.test.map.vo.MemberVO;
 import com.test.map.vo.localVO;
 import com.test.map.vo.pointsVO;
 
@@ -19,4 +19,6 @@ public interface TestService {
 	public int insertCSV(localVO vo);
 	
 	public int insertMultipleCSV(List<localVO> voList);
+	
+	public MemberVO login(MemberVO vo);
 }
