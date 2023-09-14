@@ -157,13 +157,13 @@ public class TestController {
 	                        break;
 	                    case "time":
 	                    	value = "0" + value;
-	                        vo.setTime(LocalTime.parse(value)); // 문자열을 LocalTime으로 파싱
+	                        vo.setTime(value); // 문자열을 LocalTime으로 파싱
 	                        break;
 	                    case "noise":
-	                        vo.setNoise(value);
+	                        vo.setNoise(Integer.parseInt(value));
 	                        break;
 	                    case "rpm":
-	                        vo.setRpm(value);
+	                        vo.setRpm(Integer.parseInt(value));
 	                        break;
 	                    default:
 	                        // 필드가 추가될 경우에 대비하여 필요한 처리를 추가할 수 있습니다.

@@ -104,6 +104,7 @@
 		    padding-bottom: 20px;
 		    margin-bottom: 30px;
 		    
+		    
 		}
 		
 		/* WebKit 브라우저(Chrome, Safari)에서 스크롤바 전체 스타일 지정 */
@@ -243,6 +244,7 @@
   color: red;
 }
 		
+		
         
     </style>
 </head>
@@ -273,7 +275,7 @@
             
             
                 <div class="carSelect">
-                    <p><b>차량 목록</b></p>
+                    <p><b>차량 목록</b><span style="float: right;">등록</span></p>
                     <hr>
                     <div id='selectcarlist'>
                     	<c:forEach items="${list}" var="car">
@@ -713,9 +715,9 @@
 		        }
 
 		        // 지오서버에서 SQL뷰 파라미터 레이어들 맵에 추가---------
+		        map.addLayer(clean_path);	//청소 경로 레이어
 		        map.addLayer(clean_O);		//청소O 레이어
 		        map.addLayer(clean_X);		//청소X 레이어
-		        map.addLayer(clean_path);	//청소 경로 레이어
 		        map.addLayer(clean_num);
 		        map.addLayer(clean_start);	//청소 시작점 레이어
 		        map.addLayer(clean_end);	//청소 끝점 레이어

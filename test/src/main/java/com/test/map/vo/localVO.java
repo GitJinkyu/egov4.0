@@ -12,9 +12,9 @@ public class localVO {
 	private String lat;
 	private String car_num;
 	private String date;
-	private LocalTime time;
+	private String time;
 	private String geom;
-	private String noise;
-	private String rpm;
+	private int noise;
+	private int rpm;
 
 }
